@@ -33,14 +33,14 @@ namespace seneca {
         Dictionary();
         ~Dictionary();
         Dictionary(const char* filename);
-        void searchWord(const char* word);
+        void searchWord(const std::string word);
         PartOfSpeech parsePOS(std::string& pos);
 
         Dictionary& operator=(Dictionary&& src) noexcept;
         Dictionary(Dictionary&& src) noexcept;
         Dictionary& operator=(const Dictionary& src);
         Dictionary(const Dictionary& src);
-
+        void wrapper(const std::string& prefix, const std::string& text, size_t lineWidth = 80);
     };
 
 }

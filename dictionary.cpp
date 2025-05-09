@@ -1,5 +1,11 @@
 #include "dictionary.h"
 #include "settings.h"
+#include "timeMonitor.h"
+#include "logger.h"
+
+#include <sstream>  // for std::istringstream
+#include <string>   // for std::string
+#include <iostream> // for std::cout
 
 namespace seneca {
 
@@ -54,7 +60,7 @@ namespace seneca {
         return PartOfSpeech::Unknown;
     }
 
-    void Dictionary::searchWord(const char* word) {
+    void Dictionary::searchWord(const std::string word) {
         bool found = false;
         std::string wordString = word; //to get number of chars word takes up
         size_t indentWord = wordString.length(); //getting length of word
@@ -68,20 +74,18 @@ namespace seneca {
         for(size_t i = 0; i < wordCount; i++) {
             if(wordArr[i].m_word == word) {
                 found = true;
-                if (matchCounter == 0) {
-                    std::cout << wordArr[i].m_word;
+                std::ostringstream prefix;
+                prefix << (matchCounter == 0 ? wordArr[i].m_word : std::string(indentWord, ' '));
+
+                if (g_settings.m_verbose && wordArr[i].m_pos != PartOfSpeech::Unknown) {
+                    prefix << " - (" << posStrings[static_cast<int>(wordArr[i].m_pos)] << ") ";
                 }
                 else {
-                    std::cout << std::string(indentWord, ' '); //printing blank word 
+                    prefix << " - ";
                 }
 
-                if (g_settings.m_verbose && wordArr[i].m_pos != PartOfSpeech::Unknown) { //only prints pos if known
-                    std::cout << " - (" << posStrings[static_cast<int>(wordArr[i].m_pos)] << ")";
-                }
-                else {
-                    std::cout << " -";
-                }
-                std::cout << " " << wordArr[i].m_definition << std::endl;
+                wrapper(prefix.str(), wordArr[i].m_definition);
+                printf("\n");
 
                 if (!g_settings.m_show_all) {
                     break; //will only display the first definition if permitted
@@ -89,7 +93,6 @@ namespace seneca {
                 matchCounter++;
             }
         }
-
         if(!found) {
             std::cout << "Word '" << word << "' " << "was not found in the dictionary." << std::endl;
         }
@@ -133,6 +136,30 @@ namespace seneca {
         }
         return *this;
     }
+
+    void Dictionary::wrapper(const std::string& prefix, const std::string& text, size_t lineWidth) {
+        std::istringstream words(text);
+        std::string word;
+        std::string line = prefix;
+        size_t prefixLength = prefix.length();
+
+        while (words >> word) {
+            if (line.length() + word.length() + 1 > lineWidth) {
+                std::cout << line << '\n';
+                line = std::string(prefixLength, ' ') + word;
+            }
+            else {
+                if (line.length() > prefixLength) {
+                    line += ' ';
+                }
+                line += word;
+            }
+        }
+
+        std::cout << line << '\n';
+    }
+
+
 
 }
 

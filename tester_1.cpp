@@ -9,7 +9,7 @@
 #include "logger.h"
 #include "logger.h"          // intentional
 
-// Cheching if header guards exist and follow convention.
+// Checking if header guards exist and follow convention.
 #ifndef SENECA_DICTIONARY_H
     #error "The header guard for 'dictionary.h' doesn't follow the convention!"
 #endif
@@ -67,7 +67,7 @@ int main(int argc, char** argv)
 		std::cout << std::endl;
 		dict.searchWord("Passport");
 		std::cout << std::endl;
-		dict.searchWord("Gone"); //NOT PRINTING PROPERLY
+		dict.searchWord("Gone"); 
 		std::cout << std::endl;
 		dict.searchWord("Laptop");
 		std::cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n\n";
@@ -85,7 +85,7 @@ int main(int argc, char** argv)
 		seneca::Dictionary dict2 = dict;
 		log.addEvent(timer.stopEvent());
 
-		dict.searchWord("Apple"); //NOT PRINTING PROPERLY
+		dict.searchWord("Apple"); 
 		dict2.searchWord("Ywis");
 		std::cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n\n";
 	}
@@ -176,14 +176,52 @@ int main(int argc, char** argv)
 		std::cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n\n";
 	}
 
+	std::cout << '\n' << log << std::endl;
 
-	std::cout << '\n' << log;
-	seneca::g_settings.m_time_units = "microseconds";
-	std::cout << '\n' << log;
-	seneca::g_settings.m_time_units = "milliseconds";
-	std::cout << '\n' << log;
-	seneca::g_settings.m_time_units = "seconds";
-	std::cout << '\n' << log;
+	//User Input Search
+	std::cout << "==========:==========:==========:==========:==========\n";
+	std::cout << "T7: Search for a user-input word\n";
+	std::cout << "==========:==========:==========:==========:==========\n";
+
+	std::string userWord;
+	int def{ 0 };
+
+	std::cout << "Enter a word to search: ";
+	std::getline(std::cin, userWord); //getline to account for spaces from user
+	std::cout << "1. All Definitions\n2. One Definition" << std::endl;
+	std::cin >> def;
+	if (def == 1) {
+		seneca::g_settings.m_show_all = true;
+	}
+	else if (def == 2) {
+		seneca::g_settings.m_show_all = false;
+	}
+	printf("\n");
+
+	timer.startEvent("User Search");
+	dict.searchWord(userWord);
+	log.addEvent(timer.stopEvent());
+
+	std::cout << "------------------------------------------------------\n\n";
+
+
+
+
+	std::cout << "View time stats? (Y/N)" << std::endl;
+	char ts{ 'N' };
+	//std::cin >> ts;
+	if (ts == 'Y') {
+		std::cout << '\n' << log;
+		seneca::g_settings.m_time_units = "microseconds";
+		std::cout << '\n' << log;
+		seneca::g_settings.m_time_units = "milliseconds";
+		std::cout << '\n' << log;
+		seneca::g_settings.m_time_units = "seconds";
+		std::cout << '\n' << log;
+	}
+
 
 	return cout;
 }
+
+
