@@ -28,6 +28,6 @@ g++ -std=c++17 -o dictionary main.cpp Dictionary.cpp
 ./dictionary data.csv
 
 
-**Rahman Ahmed
+**Rahman Ahmed **
 Student @ Seneca Polytechnic
-Github: Rahman2782 **
+** Github: Rahman2782 **
