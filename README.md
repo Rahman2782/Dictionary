@@ -26,3 +26,8 @@ Reads from a .csv file and produces a formatted output with optional display set
 
 g++ -std=c++17 -o dictionary main.cpp Dictionary.cpp
 ./dictionary data.csv
+
+
+### Rahman Ahmed
+### Student @ Seneca Polytechnic
+### Github: Rahman2782
